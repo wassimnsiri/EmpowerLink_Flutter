@@ -9,7 +9,7 @@ class PageAccueil extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+                     body: Row(
         children: [
           const SideBar(),
           Expanded(

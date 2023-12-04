@@ -152,33 +152,38 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    // Clear previous error messages
-                    setState(() {
-                      errorMessage = '';
-                    });
+             ElevatedButton(
+                onPressed: () async {
+    // Clear previous error messages
+               setState(() {
+                errorMessage = '';
+                 });
 
-                    // Perform login
-                    await loginUser();
+    // Perform login
+               await loginUser();
 
-                    // Check for errors and update error message
-                    if (errorMessage.isNotEmpty) {
-                      setState(() {
-                        errorMessage =
-                            'Login failed. Please check your credentials.';
-                      });
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green, // Background color
-                    onPrimary: Colors.white, // Text color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Text('Login'),
-                ),
+    // Check for errors and update error message
+              if (errorMessage.isNotEmpty) {
+                setState(() {
+                  errorMessage = 'Login failed. Please check your credentials.';
+               });
+             }
+           },
+  style: ElevatedButton.styleFrom(
+    primary: Colors.green, // Background color
+    onPrimary: Colors.white, // Text color
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20.0), // Adjust the border radius
+    ),
+    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0), // Adjust padding
+    elevation: 8.0,
+  ),
+  child: Text(
+    'Login',
+    style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold), // Increase font size and make it bold
+  ),
+),
+
                 SizedBox(height: 20),
                 // Display error message
                 if (errorMessage.isNotEmpty)

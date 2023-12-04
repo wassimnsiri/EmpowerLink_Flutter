@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:pdmadmin/UserListScreen.dart';
 import '../../utils/colors.dart';
 import '../../utils/media_query_values.dart';
 
+
 class SideBar extends StatefulWidget {
-  const SideBar({
-    super.key,
-  });
+  const SideBar({Key? key}) : super(key: key);
 
   @override
   State<SideBar> createState() => _SideBarState();
@@ -21,6 +20,7 @@ class _SideBarState extends State<SideBar> {
     Icons.message,
     Icons.person,
   ];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -137,9 +137,20 @@ class _SideBarState extends State<SideBar> {
   Padding _customIcon(IconData icon, int index) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: Icon(
-        icon,
-        color: index == 1 ? Colors.white : darkGrey.withOpacity(0.6),
+      child: InkWell(
+        onTap: () {
+          if (index == 5) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UserListScreen()),
+            );
+          }
+          // Add other cases for different icons if needed
+        },
+        child: Icon(
+          icon,
+          color: index == 1 ? Colors.white : darkGrey.withOpacity(0.6),
+        ),
       ),
     );
   }
