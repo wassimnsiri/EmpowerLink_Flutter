@@ -1,5 +1,8 @@
 // page_accueil.dart
 import 'package:flutter/material.dart';
+import 'package:pdmadmin/utils/media_query_values.dart';
+import 'package:pdmadmin/widgets/overall_portfolio_card.dart';
+import 'package:pdmadmin/widgets/overview_statistic_widget.dart';
 import '../widgets/header.dart';
 import '../widgets/side_bar.dart';
 
@@ -16,58 +19,27 @@ class PageAccueil extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Header(),
+                  const Header(),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                    child: _buildStatistics(),
+                    child: Row(
+                      children: [
+                        const Column(
+                          children: [
+                            OverallPortfolioCard(),
+                            OverviewStatistic(),
+                          ],
+                        ),
+                        SizedBox(
+                          width: context.width * 0.023,
+                        ),
+                       // const StockWidget(),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatistics() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 136, 69, 69),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Statistics',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20),
-          _buildStatTile('Total Users', '1000'),
-          _buildStatTile('Active Users', '800'),
-          _buildStatTile('New Users Today', '20'),
-          // Add more statistics as needed
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatTile(String label, String value) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(fontSize: 16),
-          ),
-          Text(
-            value,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),

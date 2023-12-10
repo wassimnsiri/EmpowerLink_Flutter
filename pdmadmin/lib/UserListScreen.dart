@@ -1,132 +1,205 @@
-  import 'dart:convert';
-  import 'package:flutter/material.dart';
-  import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:fl_chart/fl_chart.dart';
 
-  import 'package:pdmadmin/widgets/header.dart';
-  import 'package:pdmadmin/widgets/side_bar.dart';
+import 'package:pdmadmin/widgets/header.dart';
+import 'package:pdmadmin/widgets/side_bar.dart';
 
-  class UserListScreen extends StatefulWidget {
-    @override
-    _UserListScreenState createState() => _UserListScreenState();
+class UserListScreen extends StatefulWidget {
+  @override
+  _UserListScreenState createState() => _UserListScreenState();
+}
+
+class _UserListScreenState extends State<UserListScreen> {
+  List<Map<String, dynamic>> users = [];
+  List<Map<String, dynamic>> filteredUsers = [];
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
   }
 
-  class _UserListScreenState extends State<UserListScreen> {
-    List<Map<String, dynamic>> users = [];
+  void filterUsers(String query) {
+    List<Map<String, dynamic>> filteredList = users
+        .where((user) =>
+            user['username'].toLowerCase().contains(query.toLowerCase()) ||
+            user['email'].toLowerCase().contains(query.toLowerCase()) ||
+            user['lastname'].toLowerCase().contains(query.toLowerCase()) ||
+            user['firstname'].toLowerCase().contains(query.toLowerCase()))
+        .toList();
 
-    @override
-    void initState() {
-      super.initState();
-      // Fetch the list of users when the widget is created
-      fetchUsers();
-    }
+    setState(() {
+      filteredUsers = filteredList;
+    });
+  }
 
-    Future<void> fetchUsers() async {
-      try {
-        final response =
-            await http.get(Uri.parse('http://192.168.139.1:9090/user/getuser'));
+  Future<void> fetchUsers() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://192.168.139.1:9090/user/getuser'));
 
-        if (response.statusCode == 200) {
-          // If the server returns a 200 OK response, parse the JSON
-          List<dynamic> jsonResponse = json.decode(response.body);
-          setState(() {
-            // Update the state with the list of users
-            users = jsonResponse.cast<Map<String, dynamic>>();
-          });
-        } else {
-          // If the server did not return a 200 OK response,
-          // throw an exception.
-          throw Exception('Failed to load users');
-        }
-      } catch (error) {
-        // Handle error
-        print('Error: $error');
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(response.body);
+        setState(() {
+          users = jsonResponse.cast<Map<String, dynamic>>();
+        });
+      } else {
+        throw Exception('Failed to load users');
       }
+    } catch (error) {
+      print('Error: $error');
     }
+  }
 
-    Future<void> banUser(int index) async {
-      try {
-        final user = users[index];
-        final response = await http.post(
-          Uri.parse('http://192.168.139.1:9090/user/${user['username']}/ban'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            'duration': '2 months', // Replace with your desired duration
-            'reason': 'Violating community guidelines', // Replace with your ban reason
-          }),
-        );
+  Future<void> banUser(int index) async {
+    try {
+      final user = users[index];
+      final response = await http.post(
+        Uri.parse('http://192.168.139.1:9090/user/${user['username']}/ban'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'duration': '2 months',
+          'reason': 'Violating community guidelines',
+        }),
+      );
 
-        if (response.statusCode == 200) {
-          // If the server returns a 200 OK response, update the UI or handle as needed
-          print('User banned successfully');
-          // You may want to refresh the user list or update the UI in some way
-        } else {
-          // If the server did not return a 200 OK response,
-          // handle the error response (you can customize this based on your server's response)
-          print('Failed to ban user. Status code: ${response.statusCode}');
-          print('Response body: ${response.body}');
-        }
-      } catch (error) {
-        // Handle error
-        print('Error: $error');
+      if (response.statusCode == 200) {
+        print('User banned successfully');
+      } else {
+        print('Failed to ban user. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
+    } catch (error) {
+      print('Error: $error');
     }
+  }
 
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('User List'),
-        ),
-        drawer: SideBar(),
-        body: Column(
-          children: [
-            Header(),
-            users.isEmpty
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: DataTable(
-                        columns: [
-                          DataColumn(label: Text('Username')),
-                          DataColumn(label: Text('Email')),
-                          DataColumn(label: Text('Lastname')),
-                          DataColumn(label: Text('Firstname')),
-                          DataColumn(label: Text('Banned')),
-                          DataColumn(label: Text('Action')),
-                        ],
-                        rows: users.asMap().entries.map((entry) {
-                          int index = entry.key;
-                          Map<String, dynamic> user = entry.value;
+  @override
+  Widget build(BuildContext context) {
+    int activeUsers = users.where((user) => user['banned'] == 'active').length;
+    int bannedUsers = users.where((user) => user['banned'] == 'banned').length;
 
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(user['username'])),
-                              DataCell(Text(user['email'])),
-                              DataCell(Text(user['lastname'])),
-                              DataCell(Text(user['firstname'])),
-                              DataCell(Text(user['banned'].toString())),
-                              DataCell(
-                                ElevatedButton(
-                                  onPressed: () {
-                                    banUser(index);
-                                  },
-                                  child: Text('Ban'),
-                                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('User List'),
+      ),
+      drawer: SideBar(),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: searchController,
+              onChanged: (value) {
+                filterUsers(value);
+              },
+              decoration: InputDecoration(
+                labelText: 'Search',
+                hintText: 'Enter username, email, lastname, or firstname',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ),
+          if (users.isEmpty)
+            Center(
+              child: CircularProgressIndicator(),
+            )
+          else
+            Expanded(
+              child: SingleChildScrollView(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: DataTable(
+                      columns: [
+                        DataColumn(label: Text('Username')),
+                        DataColumn(label: Text('Email')),
+                        DataColumn(label: Text('Lastname')),
+                        DataColumn(label: Text('Firstname')),
+                        DataColumn(label: Text('Banned')),
+                        DataColumn(label: Text('Action')),
+                      ],
+                      rows: (filteredUsers.isNotEmpty ? filteredUsers : users)
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                        int index = entry.key;
+                        Map<String, dynamic> user = entry.value;
+
+                        return DataRow(
+                          cells: [
+                            DataCell(Text(user['username'])),
+                            DataCell(Text(user['email'])),
+                            DataCell(Text(user['lastname'])),
+                            DataCell(Text(user['firstname'])),
+                            DataCell(Text(user['banned'].toString())),
+                            DataCell(
+                              ElevatedButton(
+                                onPressed: () {
+                                  banUser(index);
+                                },
+                                child: Text('Ban'),
                               ),
-                            ],
-                            onSelectChanged: (selected) {
-                              // Handle row tap if needed
-                            },
-                          );
-                        }).toList(),
-                      ),
+                            ),
+                          ],
+                          onSelectChanged: (selected) {},
+                        );
+                      }).toList(),
                     ),
                   ),
-          ],
-        ),
-      );
-    }
+                ),
+              ),
+            ),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: 300,
+              height: 300,
+              child: PieChart(
+                PieChartData(
+                  sectionsSpace: 0,
+                  centerSpaceRadius: 40,
+                  sections: [
+                    PieChartSectionData(
+                      color: Colors.green,
+                      value: activeUsers.toDouble(),
+                      title: '$activeUsers',
+                      radius: 80,
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xffffffff),
+                      ),
+                    ),
+                    PieChartSectionData(
+                      color: Colors.red,
+                      value: bannedUsers.toDouble(),
+                      title: '$bannedUsers',
+                      radius: 80,
+                      titleStyle: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xffffffff),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Text('User Statistics',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text('Active Users: $activeUsers'),
+          Text('Banned Users: $bannedUsers'),
+        ],
+      ),
+    );
   }
+}
