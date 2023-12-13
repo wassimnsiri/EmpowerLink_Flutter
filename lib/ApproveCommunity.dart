@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './widgets/appBarWidget.dart';
 import './widgets/sideMenuWidget.dart';
 import '../services/communityServices.dart';
-import './models/communityModel.dart';
+import './Model/communityModel.dart';
 
 class ApproveCommunityPage extends StatefulWidget {
   @override
@@ -73,7 +73,7 @@ class _ApproveCommunityPageState extends State<ApproveCommunityPage> {
                               ListTile(
                                 leading: CircleAvatar(
                                   backgroundImage: AssetImage(
-                                      '../build/flutter_assets/9278608.png'),
+                                      '../build/flutter_assets/community_image.png'),
                                   radius: 20,
                                 ),
                                 title: Column(
@@ -136,7 +136,7 @@ class _ApproveCommunityPageState extends State<ApproveCommunityPage> {
                                         (user) => ListTile(
                                           leading: CircleAvatar(
                                             backgroundImage: AssetImage(
-                                                '../build/flutter_assets/3135715.png'),
+                                                '../build/flutter_assets/user_image.png'),
                                             radius: 15,
                                           ),
                                           title: Text(user),

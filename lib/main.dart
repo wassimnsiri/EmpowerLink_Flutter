@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pdm/ListHopitaux.dart';
 import 'login_page.dart';
 import './UserListScreen.dart';
 
@@ -12,9 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EmpowerLink',
-      theme: ThemeData.dark().copyWith(
-          //scaffoldBackgroundColor: const Color.fromARGB(255, 104, 93, 93),
-          ),
+   
       home: LoginPage(),
     );
   }

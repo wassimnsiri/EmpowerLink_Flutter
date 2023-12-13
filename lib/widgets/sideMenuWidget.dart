@@ -1,8 +1,26 @@
+import 'package:flutter/material.dart';
+import 'package:pdm/ListHopitaux.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../ApproveCommunity.dart';
 import '../community.dart';
-import 'package:flutter/material.dart';
+import '../UserListScreen.dart';
+import '../login_page.dart'; // Import LoginPage.dart
+import '../opportunite.dart';
+
 
 class ReusableSideMenu extends StatelessWidget {
+  Future<void> _logout(BuildContext context) async {
+    // Clear user session data
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    // Navigate to the login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,6 +49,12 @@ class ReusableSideMenu extends StatelessWidget {
             leading: Icon(Icons.local_hospital, color: Colors.white),
             onTap: () {
               // TODO: Add functionality for Hospitals item
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HospitalListPage(),
+                ),
+              );
             },
           ),
           ListTile(
@@ -41,6 +65,22 @@ class ReusableSideMenu extends StatelessWidget {
             leading: Icon(Icons.library_books, color: Colors.white),
             onTap: () {
               // TODO: Add functionality for Formation item
+            },
+          ),
+          ListTile(
+            title: Text(
+              'Users', // Added Users item
+              style: TextStyle(color: Colors.white),
+            ),
+            leading: Icon(Icons.person, color: Colors.white),
+            onTap: () {
+              // Navigate to the UserListScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserListScreen(),
+                ),
+              );
             },
           ),
           ExpansionTile(
@@ -56,7 +96,7 @@ class ReusableSideMenu extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  // Navigate to the ApproveCommunityPage
+                  // Navigate to the CommunityPage
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,7 +129,13 @@ class ReusableSideMenu extends StatelessWidget {
             ),
             leading: Icon(Icons.work, color: Colors.white),
             onTap: () {
-              // TODO: Add functionality for Opportunities item
+              // TODO: Add functionality for Hospitals item
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OpportunitePage(),
+                ),
+              );
             },
           ),
           Expanded(child: Container()), // Spacer in the middle
@@ -100,7 +146,8 @@ class ReusableSideMenu extends StatelessWidget {
             ),
             leading: Icon(Icons.logout, color: Colors.white),
             onTap: () {
-              // TODO: Add functionality for Logout item
+              // Call the logout function
+              _logout(context);
             },
           ),
           SizedBox(height: 20), // Spacer at the bottom

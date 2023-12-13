@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './models/communityModel.dart';
+import './Model/communityModel.dart';
 import './services/communityServices.dart';
 import './widgets/appBarWidget.dart';
 import './widgets/sideMenuWidget.dart';
@@ -242,7 +242,7 @@ class _CommunityPageState extends State<CommunityPage> {
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundImage: AssetImage(
-                                  '../build/flutter_assets/9278608.png'), // Update with your image path
+                                  '../build/flutter_assets/community_image.png'), // Update with your image path
                             ),
                             title: Text(
                               displayedCommunities[index].name,

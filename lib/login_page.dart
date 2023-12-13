@@ -204,41 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // Implement Google login logic
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red, // Background color
-                    onPrimary: Colors.white, // Text color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                  ),
-                ),
-                SizedBox(height: 12),
-                ElevatedButton(
-                  onPressed: () {
-                    // Implement GitHub login logic
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black, // Background color
-                    onPrimary: Colors.white, // Text color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(width: 8.0),
-                      Text('Login with GitHub'),
-                    ],
-                  ),
-                ),
+               
               ],
             ),
           ),

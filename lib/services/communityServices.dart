@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../models/communityModel.dart';
+import '../Model/communityModel.dart';
 
 class CommunityService {
   Future<List<Community>> getAllCommunities() async {
