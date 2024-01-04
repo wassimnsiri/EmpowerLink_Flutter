@@ -1,11 +1,14 @@
 import 'dart:convert';
+
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fl_chart/fl_chart.dart';
-import 'package:pdm/services/UserService%20.dart';
+import 'package:pdm/view/views/education/educations_tab_view.dart';
+import 'package:pdm/view/views/formation/formations_tab_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import './widgets/appBarWidget.dart';
 import './widgets/sideMenuWidget.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserListScreen extends StatefulWidget {
   @override
@@ -48,32 +51,42 @@ class _UserListScreenState extends State<UserListScreen> {
     });
   }
 
+  Future<void> fetchUsers() async {
+    try {
+      final response =
+          await http.get(Uri.parse('http://localhost:9090/user/getuser'));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = json.decode(response.body);
+        setState(() {
+          users = jsonResponse.cast<Map<String, dynamic>>();
+        });
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
   Future<void> banUser(int index) async {
     try {
       final user = users[index];
-      await UserService.banUser(user['username']);
-      await fetchUsers();
-    } catch (error) {
-      print('Error: $error');
-    }
-  }
+      final response = await http.post(
+        Uri.parse('http://localhost:9090/user/${user['username']}/ban'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'duration': '2 months',
+          'reason': 'Violating community guidelines',
+        }),
+      );
 
-  Future<void> toggleUserRole(int index) async {
-    try {
-      final user = users[index];
-      await UserService.toggleUserRole(user['username']);
-      await fetchUsers();
-    } catch (error) {
-      print('Error: $error');
-    }
-  }
-
-  Future<void> fetchUsers() async {
-    try {
-      final userList = await UserService.fetchUsers();
-      setState(() {
-        users = userList;
-      });
+      if (response.statusCode == 200) {
+        print('User banned successfully');
+      } else {
+        print('Failed to ban user. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
     } catch (error) {
       print('Error: $error');
     }
@@ -106,7 +119,7 @@ class _UserListScreenState extends State<UserListScreen> {
                       onChanged: (value) {
                         filterUsers(value);
                       },
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.black), // Set text color
                       decoration: InputDecoration(
                         labelText: 'Search',
                         hintText:
@@ -151,13 +164,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                 label: Text('Banned',
                                     style: TextStyle(color: Colors.black))),
                             DataColumn(
-                                label: Text('Role',
-                                    style: TextStyle(color: Colors.black))),
-                            DataColumn(
                                 label: Text('Action',
-                                    style: TextStyle(color: Colors.black))),
-                            DataColumn(
-                                label: Text('Role',
                                     style: TextStyle(color: Colors.black))),
                           ],
                           rows:
@@ -180,8 +187,6 @@ class _UserListScreenState extends State<UserListScreen> {
                                     style: TextStyle(color: Colors.black))),
                                 DataCell(Text(user['banned'].toString(),
                                     style: TextStyle(color: Colors.black))),
-                                DataCell(Text(user['role'].toString(),
-                                    style: TextStyle(color: Colors.black))),
                                 DataCell(
                                   ElevatedButton(
                                     onPressed: () {
@@ -196,34 +201,13 @@ class _UserListScreenState extends State<UserListScreen> {
                                       ),
                                     ),
                                     child: Text(
-                                      user['banned'].toString(),
+                                      'Ban',
                                       style: TextStyle(
                                         color: Colors.black,
                                       ),
                                     ),
                                   ),
                                 ),
-                                DataCell(
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      toggleUserRole(index);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.white,
-                                      elevation: 5,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      ' Role',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                                )
                               ],
                               onSelectChanged: (selected) {},
                             );

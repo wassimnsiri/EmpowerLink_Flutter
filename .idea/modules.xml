@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/pdm.iml" filepath="$PROJECT_DIR$/pdm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/pdm_android.iml" filepath="$PROJECT_DIR$/android/pdm_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/EmpowerLink_Flutter-mohamed.iml" filepath="$PROJECT_DIR$/.idea/EmpowerLink_Flutter-mohamed.iml" />
     </modules>
   </component>
 </project>

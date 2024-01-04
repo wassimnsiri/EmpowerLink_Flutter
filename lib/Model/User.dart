@@ -21,8 +21,7 @@ class User {
   bool verifierd;
   String restcode;
 
-  User(
-    {
+  User({
     required this.username,
     required this.firstname,
     required this.lastname,
@@ -43,5 +42,4 @@ class User {
     required this.verifierd,
     required this.restcode,
   });
-  
 }

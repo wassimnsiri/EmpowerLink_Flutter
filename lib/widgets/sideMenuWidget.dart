@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pdm/ListHopitaux.dart';
+import 'package:pdm/view/views/education/educations_tab_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../ApproveCommunity.dart';
-import '../community.dart';
 import '../UserListScreen.dart';
+import '../community.dart';
 import '../login_page.dart'; // Import LoginPage.dart
 import '../opportunite.dart';
-
+import '../view/views/formation/formations_tab_view.dart';
 
 class ReusableSideMenu extends StatelessWidget {
   Future<void> _logout(BuildContext context) async {
@@ -38,7 +40,9 @@ class ReusableSideMenu extends StatelessWidget {
             ),
             leading: Icon(Icons.school, color: Colors.white),
             onTap: () {
-              // TODO: Add functionality for Education item
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const EducationsTabView(),
+              ));
             },
           ),
           ListTile(
@@ -64,7 +68,9 @@ class ReusableSideMenu extends StatelessWidget {
             ),
             leading: Icon(Icons.library_books, color: Colors.white),
             onTap: () {
-              // TODO: Add functionality for Formation item
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const FormationsTabView(),
+              ));
             },
           ),
           ListTile(

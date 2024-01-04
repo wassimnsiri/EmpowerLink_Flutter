@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:pdm/Provider/UserProvider.dart';
-import 'package:pdm/UserListScreen.dart';
-import 'package:provider/provider.dart';
+import 'package:pdm/ListHopitaux.dart';
 import 'login_page.dart';
+import './UserListScreen.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(), // Provide the UserProvider
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -19,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'EmpowerLink',
+   
       home: UserListScreen(),
     );
   }

@@ -38,32 +38,24 @@ class _LoginPageState extends State<LoginPage> {
           // Decode le token
           Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
 
-          // Check if the role is ADMIN
-          String role = decodedToken['role'];
-          if (role == 'admin') {
-            // Obtenez le nom d'utilisateur du payload
-            String username = decodedToken['username'];
-            String email = decodedToken['email'];
+          // Obtenez le nom d'utilisateur du payload
+          String username = decodedToken['username'];
+          String email = decodedToken['email'];
 
-            // Enregistrez le token et le nom d'utilisateur dans shared_preferences
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setString('token', token);
-            prefs.setString('username', username);
-            prefs.setString('email', email);
+          // Enregistrez le token et le nom d'utilisateur dans shared_preferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('token', token);
+          prefs.setString('username', username);
+          prefs.setString('email', email);
 
-            // Accédez à la page d'accueil avec le nom d'utilisateur
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => UserListScreen()),
-            );
-          } else {
-            // User does not have ADMIN role, you may show an error message or handle it accordingly
-            print('User does not have ADMIN role');
-            setState(() {
-              errorMessage = 'You do not have the necessary permissions.';
-            });
-            _showRoleAlert();
-          }
+          // Accédez à la page d'accueil avec le nom d'utilisateur
+
+          // #############################
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => UserListScreen()),
+          );
         } else {
           print('Error: Token not found in API response');
         }
@@ -80,26 +72,6 @@ class _LoginPageState extends State<LoginPage> {
         errorMessage = 'An error occurred. Please try again later.';
       });
     }
-  }
-
-  void _showRoleAlert() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Permission Denied'),
-          content: Text('You can only login if your role is admin.'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -232,6 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 SizedBox(height: 20),
+               
               ],
             ),
           ),
